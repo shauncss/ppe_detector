@@ -3,7 +3,7 @@ import os
 
 if __name__ == '__main__':
     # 1. Path to your best model weights (update 'train' to 'train2' etc. if needed)
-    weights_path = 'runs/detect/train/weights/best.pt'
+    weights_path = 'runs/detect/train2/weights/best.pt'
     
     if not os.path.exists(weights_path):
         print(f"Error: Could not find model weights at {weights_path}")

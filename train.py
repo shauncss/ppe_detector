@@ -10,6 +10,6 @@ if __name__ == '__main__':
         imgsz=416,        
         batch=-1,         
         workers=8,        
-        cache=True,       
+        cache='disk',       
         device=0 
     )

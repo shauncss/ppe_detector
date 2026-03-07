@@ -11,7 +11,7 @@ wandb/
 # Datasets & Media
 # =========================
 roboflow_dataset/
-dataset2/
+dataset3/
 images/
 *.zip
 *.jpg

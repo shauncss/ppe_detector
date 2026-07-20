@@ -10,16 +10,16 @@ if __name__ == '__main__':
 
     model = YOLO(weights_path)
 
-    if os.path.exists('test_image.jpg'):
+    if os.path.exists('assets/test_image.jpg'):
         print("Testing Image...")
-        model.predict(source='test_image.jpg', save=True, conf=0.3)
+        model.predict(source='assets/test_image.jpg', save=True, conf=0.3)
     else:
         print("No 'test_image.jpg' found. Skipping image test.")
 
-    if os.path.exists('test_video.mp4'):
+    if os.path.exists('assets/test_video.mp4'):
         print("Testing Video...")
-        model.predict(source='test_video.mp4', save=True, conf=0.3)
+        model.predict(source='assets/test_video.mp4', save=True, conf=0.3)
     else:
         print("No 'test_video.mp4' found. Skipping video test.")
-        
+
     print("Done !!")

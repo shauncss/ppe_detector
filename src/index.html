@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PPE Detector Verification</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -22,18 +21,15 @@
         }
     </script>
     
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* Smooth color transitions for dark mode */
         body { transition: background-color 0.3s ease, color 0.3s ease; }
         .transition-box { transition: all 0.3s ease; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 dark:bg-darkBg dark:text-gray-100 min-h-screen">
 
-    <!-- Header / Navbar -->
     <header class="flex justify-between items-center px-8 py-4 bg-white dark:bg-darkCard shadow-sm sticky top-0 z-50 transition-box border-b border-gray-200 dark:border-gray-800">
         <div class="flex items-center gap-3">
             <div class="bg-primary text-white p-2 rounded-lg">
@@ -41,46 +37,34 @@
             </div>
             <h1 class="text-xl font-bold tracking-wide">PPE<span class="text-primary font-normal">Detector</span></h1>
         </div>
-        
-        <!-- Dark Mode Toggle (Eye Icon) -->
         <button id="themeToggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none" title="Toggle Dark/Light Mode">
             <i id="themeIcon" class="fa-solid fa-eye text-xl text-gray-600 dark:text-gray-300"></i>
         </button>
     </header>
 
-    <!-- Main Workspace -->
     <main class="max-w-4xl mx-auto px-4 py-8 space-y-6">
         
-        <!-- Media Input Area (Drag/Drop & Paste) -->
         <div id="dropzone" class="border-2 border-dashed border-gray-300 dark:border-gray-600 bg-white dark:bg-darkCard rounded-2xl p-10 text-center hover:border-primary dark:hover:border-primary transition-box relative overflow-hidden group">
+            <input type="file" id="fileInput" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" accept="image/*">
             
-            <input type="file" id="fileInput" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" accept="image/*,video/*">
-            
-            <!-- Default Prompt state -->
             <div id="uploadPrompt" class="space-y-4 pointer-events-none transition-box">
                 <div class="inline-block p-4 rounded-full bg-blue-50 dark:bg-blue-900/30 text-primary mb-2 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-cloud-arrow-up text-4xl"></i>
                 </div>
-                <h3 class="text-xl font-semibold">Upload Media</h3>
-                <p class="text-gray-500 dark:text-gray-400">Drag & drop an image or video, click to browse,</p>
-                <p class="text-sm font-medium text-gray-400 dark:text-gray-500">or press <kbd class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded border dark:border-gray-700 font-mono text-xs">Ctrl+V</kbd> to paste from clipboard</p>
+                <h3 class="text-xl font-semibold">Upload Image</h3>
+                <p class="text-gray-500 dark:text-gray-400">Drag & drop an image, click to browse, or paste <kbd class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded border dark:border-gray-700 font-mono text-xs">Ctrl+V</kbd></p>
             </div>
 
-            <!-- Preview State (Hidden by default) -->
             <div id="previewContainer" class="hidden absolute inset-0 bg-black/5 dark:bg-black/40 flex items-center justify-center z-10 p-2">
                 <img id="imagePreview" class="max-h-full max-w-full rounded shadow-md hidden object-contain" />
-                <video id="videoPreview" class="max-h-full max-w-full rounded shadow-md hidden" controls></video>
-                
                 <button id="removeMedia" class="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-colors z-30" title="Remove Media">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Controls Area -->
         <div class="bg-white dark:bg-darkCard rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 transition-box">
             <div class="space-y-6">
-                <!-- Confidence Slider -->
                 <div class="space-y-3">
                     <div class="flex justify-between items-center">
                         <label for="confSlider" class="font-semibold text-gray-700 dark:text-gray-200">
@@ -94,33 +78,25 @@
                         class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-primary">
                 </div>
                 
-                <!-- Verify Button -->
                 <button id="verifyBtn" class="w-full bg-primary hover:bg-blue-600 text-white text-lg font-bold py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg">
                     <i class="fa-solid fa-shield-halved"></i> Verify Compliance
                 </button>
             </div>
         </div>
 
-        <!-- Results Area (Hidden by default) -->
         <div id="resultsArea" class="hidden bg-white dark:bg-darkCard rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 transition-box">
             <h2 class="text-xl font-bold mb-6 flex items-center gap-2 border-b border-gray-100 dark:border-gray-700 pb-3">
                 <i class="fa-solid fa-chart-pie text-primary"></i> Verification Results
             </h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Output Image/Frame -->
                 <div class="space-y-3">
                     <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Processed Output</h3>
                     <div class="bg-gray-100 dark:bg-gray-900 rounded-xl aspect-video flex items-center justify-center overflow-hidden border border-gray-200 dark:border-gray-700">
                         <img id="resultImage" class="max-h-full max-w-full object-contain hidden" />
-                        <div id="resultPlaceholder" class="text-gray-400 flex flex-col items-center gap-2">
-                            <i class="fa-solid fa-image text-4xl mb-1"></i>
-                            <span class="text-sm">Awaiting Backend Response</span>
-                        </div>
                     </div>
                 </div>
                 
-                <!-- Detections List -->
                 <div class="space-y-3">
                     <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Detected Items</h3>
                     <div id="detectionList" class="space-y-3 max-h-[300px] overflow-y-auto pr-2">
@@ -129,242 +105,125 @@
                 </div>
             </div>
         </div>
-
     </main>
 
     <script>
-        // --- DOM Elements ---
         const html = document.documentElement;
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
-        
         const dropzone = document.getElementById('dropzone');
         const fileInput = document.getElementById('fileInput');
         const previewContainer = document.getElementById('previewContainer');
         const uploadPrompt = document.getElementById('uploadPrompt');
         const imagePreview = document.getElementById('imagePreview');
-        const videoPreview = document.getElementById('videoPreview');
         const removeMedia = document.getElementById('removeMedia');
-        
         const confSlider = document.getElementById('confSlider');
         const confValue = document.getElementById('confValue');
-        
         const verifyBtn = document.getElementById('verifyBtn');
         const resultsArea = document.getElementById('resultsArea');
         const resultImage = document.getElementById('resultImage');
-        const resultPlaceholder = document.getElementById('resultPlaceholder');
         const detectionList = document.getElementById('detectionList');
 
         let currentFile = null;
 
-        // --- 1. Dark Mode Logic ---
         themeToggle.addEventListener('click', () => {
             html.classList.toggle('dark');
-            if(html.classList.contains('dark')) {
-                themeIcon.classList.remove('fa-eye');
-                themeIcon.classList.add('fa-eye-slash');
-            } else {
-                themeIcon.classList.remove('fa-eye-slash');
-                themeIcon.classList.add('fa-eye');
-            }
+            themeIcon.className = html.classList.contains('dark') 
+                ? 'fa-solid fa-eye-slash text-xl text-gray-300' 
+                : 'fa-solid fa-eye text-xl text-gray-600';
         });
 
-        // --- 2. Slider Logic ---
-        confSlider.addEventListener('input', (e) => {
-            confValue.textContent = parseFloat(e.target.value).toFixed(2);
-        });
+        confSlider.addEventListener('input', (e) => confValue.textContent = parseFloat(e.target.value).toFixed(2));
 
-        // --- 3. Media Handling (File input, Drag & Drop, Clipboard) ---
         function handleFile(file) {
-            if (!file) return;
-            
-            // Only accept images or videos
-            if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
-                alert('Please upload a valid image or video file.');
+            if (!file || !file.type.startsWith('image/')) {
+                alert('Please upload a valid image file.');
                 return;
             }
-
             currentFile = file;
-            const fileURL = URL.createObjectURL(file);
-            
-            // UI Toggle
-            uploadPrompt.classList.add('opacity-0');
-            setTimeout(() => {
-                uploadPrompt.classList.add('hidden');
-                previewContainer.classList.remove('hidden');
-            }, 300);
-            
-            if (file.type.startsWith('image/')) {
-                imagePreview.src = fileURL;
-                imagePreview.classList.remove('hidden');
-                videoPreview.classList.add('hidden');
-            } else if (file.type.startsWith('video/')) {
-                videoPreview.src = fileURL;
-                videoPreview.classList.remove('hidden');
-                imagePreview.classList.add('hidden');
-            }
-            
-            // Hide results on new upload
+            uploadPrompt.classList.add('hidden');
+            previewContainer.classList.remove('hidden');
+            imagePreview.src = URL.createObjectURL(file);
+            imagePreview.classList.remove('hidden');
             resultsArea.classList.add('hidden'); 
         }
 
-        // File Input Click
         fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
 
-        // Remove Media
         removeMedia.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation(); // Stop click from bubbling to the file input
-            currentFile = null;
-            fileInput.value = '';
-            
+            e.preventDefault(); e.stopPropagation();
+            currentFile = null; fileInput.value = '';
             previewContainer.classList.add('hidden');
             uploadPrompt.classList.remove('hidden');
-            setTimeout(() => uploadPrompt.classList.remove('opacity-0'), 10);
-            
             imagePreview.src = '';
-            videoPreview.src = '';
             resultsArea.classList.add('hidden');
         });
 
-        // Drag & Drop
-        dropzone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropzone.classList.add('border-primary', 'bg-blue-50/50', 'dark:bg-blue-900/20');
-        });
-        
-        dropzone.addEventListener('dragleave', () => {
-            dropzone.classList.remove('border-primary', 'bg-blue-50/50', 'dark:bg-blue-900/20');
-        });
-
+        dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('border-primary'); });
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('border-primary'));
         dropzone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropzone.classList.remove('border-primary', 'bg-blue-50/50', 'dark:bg-blue-900/20');
-            if (e.dataTransfer.files.length > 0) {
-                handleFile(e.dataTransfer.files[0]);
-            }
+            e.preventDefault(); dropzone.classList.remove('border-primary');
+            if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
         });
 
-        // Global Clipboard Paste
         document.addEventListener('paste', (e) => {
             const items = (e.clipboardData || e.originalEvent.clipboardData).items;
             for (let i = 0; i < items.length; i++) {
-                if (items[i].kind === 'file') {
-                    const file = items[i].getAsFile();
-                    handleFile(file);
-                    break;
-                }
+                if (items[i].kind === 'file') { handleFile(items[i].getAsFile()); break; }
             }
         });
 
-        // --- 4. Verify & Render Logic ---
         verifyBtn.addEventListener('click', () => {
-            if (!currentFile) {
-                alert("Please drop or paste an image/video first.");
-                return;
-            }
+            if (!currentFile) { alert("Please upload an image first."); return; }
 
-            // Set Loading UI
             const originalText = verifyBtn.innerHTML;
             verifyBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing Model...';
             verifyBtn.disabled = true;
 
-            // ---------------------------------------------------------
-            // TODO FOR PYTHON BACKEND: Uncomment the fetch block below
-            // ---------------------------------------------------------
-            /*
+            // --- REAL BACKEND FETCH ---
             const formData = new FormData();
             formData.append('file', currentFile);
             formData.append('confidence', confSlider.value);
 
-            fetch('http://127.0.0.1:8000/detect', { 
+            fetch('http://localhost:8000/detect', { 
                 method: 'POST',
                 body: formData
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error("Server responded with an error.");
+                return res.json();
+            })
             .then(data => renderResults(data))
             .catch(err => {
                 console.error(err);
-                alert("Failed to connect to backend server.");
+                alert("Failed to connect to Python backend. Ensure 'uvicorn main:app' is running.");
             })
             .finally(() => {
                 verifyBtn.innerHTML = originalText;
                 verifyBtn.disabled = false;
             });
-            */
-
-            // SIMULATED DELAY (Remove when connecting to real backend)
-            setTimeout(() => {
-                // Mock Backend Response Data
-                const mockData = {
-                    imageSrc: currentFile.type.startsWith('image/') ? imagePreview.src : null, // Mirroring upload for demo
-                    detections: [
-                        { class: 'Helmet', conf: 0.96 },
-                        { class: 'High-Vis Vest', conf: 0.89 },
-                        { class: 'Safety Goggles', conf: parseFloat(confSlider.value) - 0.05 }, // Deliberately low to test slider
-                    ]
-                };
-                
-                renderResults(mockData);
-                verifyBtn.innerHTML = originalText;
-                verifyBtn.disabled = false;
-            }, 1200);
         });
 
         function renderResults(data) {
             resultsArea.classList.remove('hidden');
+            setTimeout(() => resultsArea.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
             
-            // Scroll down to results smoothly
-            setTimeout(() => {
-                resultsArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
-            
-            // Setup Image
-            if(data.imageSrc) {
-                resultPlaceholder.classList.add('hidden');
-                resultImage.src = data.imageSrc; // Set this to the Base64 output from your Python script
-                resultImage.classList.remove('hidden');
-            } else {
-                resultImage.classList.add('hidden');
-                resultPlaceholder.classList.remove('hidden');
-                resultPlaceholder.innerHTML = '<i class="fa-solid fa-video text-4xl mb-1"></i><span class="text-sm">Video processed. Check console or backend logs.</span>';
-            }
+            resultImage.src = data.imageSrc;
+            resultImage.classList.remove('hidden');
 
-            // Setup Detection List
             detectionList.innerHTML = '';
-            const threshold = parseFloat(confSlider.value);
-            
-            // Filter detections coming from backend based on the slider value
-            const validDetections = data.detections.filter(d => d.conf >= threshold);
-            const invalidDetections = data.detections.filter(d => d.conf < threshold);
-
             if (data.detections.length === 0) {
-                detectionList.innerHTML = '<div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-center text-gray-500">No objects detected in frame.</div>';
+                detectionList.innerHTML = '<div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-center text-gray-500">No objects detected.</div>';
                 return;
             }
 
-            // Render passed detections
-            validDetections.forEach(det => {
+            data.detections.forEach(det => {
                 const item = document.createElement('div');
                 item.className = 'flex justify-between items-center p-4 rounded-xl border bg-green-50 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300';
                 item.innerHTML = `
                     <div class="flex items-center gap-3">
                         <i class="fa-solid fa-circle-check text-lg"></i>
                         <span class="font-bold tracking-wide">${det.class}</span>
-                    </div>
-                    <span class="font-mono bg-white dark:bg-black/30 px-2 py-1 rounded text-sm">${(det.conf * 100).toFixed(1)}%</span>
-                `;
-                detectionList.appendChild(item);
-            });
-
-            // Render rejected detections (Below threshold)
-            invalidDetections.forEach(det => {
-                const item = document.createElement('div');
-                item.className = 'flex justify-between items-center p-4 rounded-xl border bg-red-50 border-red-200 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300 opacity-70';
-                item.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-circle-xmark text-lg"></i>
-                        <span class="font-bold tracking-wide">${det.class} <span class="text-xs font-normal ml-1">(Below Threshold)</span></span>
                     </div>
                     <span class="font-mono bg-white dark:bg-black/30 px-2 py-1 rounded text-sm">${(det.conf * 100).toFixed(1)}%</span>
                 `;

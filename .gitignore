@@ -1,3 +1,4 @@
 runs/
 dataset3/
 *.pt
+*.pyc
